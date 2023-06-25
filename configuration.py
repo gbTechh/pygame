@@ -1,6 +1,6 @@
 import pygame
 import pygame.mixer
-from const import DEFAULT_SOUND_ENABLED
+from const import DEFAULT_SOUND_ENABLED, SPEED_CHARACTER
 
 
 class Configuration:
@@ -15,6 +15,7 @@ class Configuration:
             cls._instance.move_left = pygame.K_a
             cls._instance.move_right = pygame.K_d
             cls._instance.fly = pygame.K_w
+            cls._instance.speed_character = SPEED_CHARACTER
             cls._instance.observers = []
 
         return cls._instance

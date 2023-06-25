@@ -5,6 +5,9 @@ import pygame.mixer
 from components.Button import HandleButton
 from const import FONDO_PLAYING1, SCREEN_WIDTH, SCREEN_HEIGHT
 from configuration import SoundManager
+from entities.Character import Character
+from entities.FactoryEntity import CharacterFactory
+
 
 sound_manager = SoundManager()
 
@@ -24,20 +27,38 @@ class PlayingState:
 
         self.keys = self.game.pygame.key.get_pressed()
 
-
         if(self.configuration.sound_enabled):
             self.sound_menu.load_sound('menu-sound', 'assets/sounds/playing_theme.mp3')
             self.sound_menu.play_sound('menu-sound', -1)
 
-       
+
+        #Character
+        self.character_factory = CharacterFactory()
+        self.character = self.character_factory.create_character("sword", self.configuration.speed_character)
+        self.K_move_right = self.configuration.move_right
+        self.K_move_left = self.configuration.move_left
+
+        self.right_is_pressed = False
+        self.left_is_pressed = False
 
     def handle_events(self, events):
         self.keys = self.game.pygame.key.get_pressed()
         for event in events:
             if event.type == self.game.pygame.KEYDOWN:
-                pass
-                # if event.key == self.game.pygame.K_SPACE:
-                #     self.game.change_state("playing")  
+                if event.key == self.configuration.sound_enabled:
+                    self.configuration.sound_enabled
+                if event.key == self.K_move_right:
+                    print('evnet rigth press')
+                    self.right_is_pressed = True
+                    self.left_is_pressed = False
+                if event.key == self.K_move_left:
+                    self.left_is_pressed = True
+                    self.right_is_pressed = False        
+            if event.type == self.game.pygame.KEYUP:
+                if event.key == self.K_move_right:
+                    self.right_is_pressed = False 
+                if event.key == self.K_move_left:
+                    self.left_is_pressed = False 
 
        
 
@@ -60,7 +81,17 @@ class PlayingState:
         if(self.x_relative < SCREEN_WIDTH(self.game.pygame)):
             self.game.screen.blit(self.background, (self.x_relative, self.background_y))
 
-
+        #render character
+        if self.left_is_pressed:
+            self.character.start_movement("left")
+            self.character.movementCharacter(self.game.delta_time)
+            
+        if self.right_is_pressed:
+            print('press right')
+            self.character.start_movement("right")
+            self.character.movementCharacter(self.game.delta_time)
+            
+        self.character.renderCharacter(self.game.screen)
 
 
     def cleanup(self):

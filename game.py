@@ -20,6 +20,7 @@ class Game:
         ##self.current_state almacenara el estado del juego, se inicializa como None
         self.current_state = None
         self.running = True
+        self.delta_time = self.clock.tick(FPS) / 1000.0
 
     def change_state(self, new_state):
         if self.current_state:
