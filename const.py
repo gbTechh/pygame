@@ -40,10 +40,24 @@ def sprite_character_run_left(py):
           py.image.load("assets/sprites/personaje/correr_izquierda/Pers_correr_izq_5.png"),
           py.image.load("assets/sprites/personaje/correr_izquierda/Pers_correr_izq_6.png")]
 
-def sprite_character_run_right(py):
-  return [py.image.load("assets/sprites/personaje/correr_derecha/Pers_correr_1.png"),
-          py.image.load("assets/sprites/personaje/correr_derecha/Pers_correr_2.png"),
-          py.image.load("assets/sprites/personaje/correr_derecha/Pers_correr_3.png"),
-          py.image.load("assets/sprites/personaje/correr_derecha/Pers_correr_4.png"),
-          py.image.load("assets/sprites/personaje/correr_derecha/Pers_correr_5.png"),
-          py.image.load("assets/sprites/personaje/correr_derecha/Pers_correr_6.png")]
+def sprite_character_weapon1_left(py):
+  return [py.image.load("assets/sprites/personaje/mazo_izquierda/mazo_izquierda_2.png"),
+          py.image.load("assets/sprites/personaje/mazo_izquierda/mazo_izquierda_1.png"),
+          py.image.load("assets/sprites/personaje/mazo_izquierda/mazo_izquierda_3.png"),]
+
+def sprite_character_weapon1_right(py):
+  return [py.image.load("assets/sprites/personaje/mazo_derecha/mazo_derecha_2.png"),
+          py.image.load("assets/sprites/personaje/mazo_derecha/mazo_derecha_1.png"),
+          py.image.load("assets/sprites/personaje/mazo_derecha/mazo_derecha_3.png"),]
+
+def sprite_character_jump_right(py):
+  return [py.image.load("assets/sprites/personaje/jump/jump_mazo/jump_mazo_derecha_1.png"),
+          py.image.load("assets/sprites/personaje/jump/jump_mazo/jump_mazo_derecha_2.png"),]
+def sprite_character_jump_left(py):
+  return [py.image.load("assets/sprites/personaje/jump/jump_mazo/jump_mazo_izquierda_1.png"),
+          py.image.load("assets/sprites/personaje/jump/jump_mazo/jump_mazo_izquierda_2.png"),]
+
+def sprite_character_quiet_right(py):
+  return [py.image.load("assets/sprites/personaje/quieto/quieto_mazo_derecha.png"),]
+def sprite_character_quiet_left(py):
+  return [py.image.load("assets/sprites/personaje/quieto/quieto_mazo_izquierda.png"),]
