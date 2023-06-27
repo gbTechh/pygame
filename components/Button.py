@@ -19,6 +19,11 @@ class HandleButton(Button):
         self.path_sound = path
         self.name_sound = name_sound
 
+    def get_width(self):
+        return self.width
+    def get_height(self):
+        return self.height
+
     def handle_event(self, event, isEnable = True ):
         if event.type == self.pygame.MOUSEBUTTONDOWN:
             mouse_pos = self.pygame.mouse.get_pos()

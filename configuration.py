@@ -14,6 +14,9 @@ class Configuration:
             cls._instance.move_key = pygame.K_RIGHT
             cls._instance.move_left = pygame.K_a
             cls._instance.move_right = pygame.K_d
+            cls._instance.change_weapon_1 = pygame.K_1
+            cls._instance.change_weapon_2 = pygame.K_2
+            cls._instance.change_weapon_3 = pygame.K_3
             cls._instance.attack_key = pygame.MOUSEBUTTONDOWN
             cls._instance.unattack_key = pygame.MOUSEBUTTONUP
             cls._instance.fly = pygame.K_w
@@ -79,3 +82,8 @@ class SoundManager:
         if sound:
             sound.stop()
             del self.sounds[sound_name]
+
+    def reset_sounds(self):
+        for sound_name, sound in self.sounds.items():
+            sound.stop()
+        self.sounds.clear()

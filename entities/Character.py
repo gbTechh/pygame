@@ -1,6 +1,6 @@
 import pygame
 import time
-from const import sprite_character_run_left, sprite_character_weapon1_right, sprite_character_jump_right, sprite_character_jump_left,sprite_character_quiet_right,sprite_character_quiet_left, sprite_character_weapon1_left,sprite_character_weapon1_attack_right,sprite_character_weapon1_attack_left, sprite_character_weapon1_attack_quiet_right, sprite_character_weapon1_attack_quiet_left, sprite_character_weapon1_attack_jump_right, sprite_character_weapon1_attack_jump_left, SCREEN_WIDTH
+from const import sprite_character_run_left, sprite_character_weapon1_right, sprite_character_jump_right, sprite_character_jump_left,sprite_character_quiet_right,sprite_character_quiet_left, sprite_character_weapon1_left,sprite_character_weapon1_attack_right,sprite_character_weapon1_attack_left, sprite_character_weapon1_attack_quiet_right, sprite_character_weapon1_attack_quiet_left, sprite_character_weapon1_attack_jump_right, sprite_character_weapon1_attack_jump_left, sprite_character_weapon2_right,sprite_character_weapon2_left, sprite_character_quiet_weapon2_right, sprite_character_quiet_weapon2_left,sprite_character_weapon2_jump_right, sprite_character_weapon2_jump_left,sprite_character_weapon2_attack_right, sprite_character_weapon2_attack_left, sprite_character_weapon2_attack_quiet_right, sprite_character_weapon2_attack_quiet_left, sprite_character_weapon2_attack_jump_right, sprite_character_weapon2_attack_jump_left, SCREEN_WIDTH
 from configuration import SoundManager
 
 sound_manager = SoundManager()
@@ -9,15 +9,17 @@ clock = pygame.time.Clock()
 class Character(pygame.sprite.Sprite):
     def __init__(self, weapon, weapon_type, speed):
         super().__init__()
-       
+
+
+        self.weapon_type = weapon_type
         self.sound_menu = sound_manager
-        self.movement_sprites = sprite_character_weapon1_right(pygame)
+        self.movement_sprites = ''
 
         self.position = (0, 0)
         self.health = 100
         self.weapon = weapon
 
-        self.weapon_type = weapon_type
+        
         self.cuenta_pasos = 0
         self.right_movement = False
         self.left_movement = False
@@ -47,6 +49,45 @@ class Character(pygame.sprite.Sprite):
         self.attack_duration = 4.0
         self.attack_start_time = time.time()
 
+    def update_weapon(self, weapon):
+        self.weapon_type = weapon
+
+    def change_weapon(self, key):
+        if self.weapon_type == 'sword':
+            sprites = {
+                'run_left': sprite_character_weapon1_left(pygame),
+                'run_right': sprite_character_weapon1_right(pygame),
+                'jump_left': sprite_character_jump_left(pygame),
+                'jump_right': sprite_character_jump_right(pygame),
+                'quiet_left': sprite_character_quiet_left(pygame),
+                'quiet_right': sprite_character_quiet_right(pygame),
+
+                'attack_run_left': sprite_character_weapon1_attack_left(pygame),
+                'attack_run_right': sprite_character_weapon1_attack_right(pygame),
+                'attack_jump_right': sprite_character_weapon1_attack_jump_right(pygame),
+                'attack_jump_left': sprite_character_weapon1_attack_jump_left(pygame),
+                'attack_quiet_right': sprite_character_weapon1_attack_quiet_right(pygame),
+                'attack_quiet_left': sprite_character_weapon1_attack_quiet_left(pygame),
+            }
+        if self.weapon_type == 'gun':
+            sprites = {
+                'run_left': sprite_character_weapon2_left(pygame),
+                'run_right': sprite_character_weapon2_right(pygame),
+                'jump_left': sprite_character_weapon2_jump_left(pygame),
+                'jump_right': sprite_character_weapon2_jump_right(pygame),
+                'quiet_left': sprite_character_quiet_weapon2_left(pygame),
+                'quiet_right': sprite_character_quiet_weapon2_right(pygame),
+
+                'attack_run_left': sprite_character_weapon2_attack_left(pygame),
+                'attack_run_right': sprite_character_weapon2_attack_right(pygame),
+                'attack_jump_right': sprite_character_weapon2_attack_jump_right(pygame),
+                'attack_jump_left': sprite_character_weapon2_attack_jump_left(pygame),
+                'attack_quiet_right': sprite_character_weapon2_attack_quiet_right(pygame),
+                'attack_quiet_left': sprite_character_weapon2_attack_quiet_left(pygame),
+            }
+        return sprites.get(key)
+
+
     def movementCharacter(self, delta):    
        
         
@@ -64,7 +105,6 @@ class Character(pygame.sprite.Sprite):
                 self.current_image_index += 1
                 self.animation_timer = 0.0    
 
-        print(self.current_image_index)
         self.current_image_index %= len(self.movement_sprites)
 
 
@@ -83,10 +123,9 @@ class Character(pygame.sprite.Sprite):
             self.right_movement = True
             self.left_movement = False
             if(not self.jumping and not self.attacking):
-                self.movement_sprites = sprite_character_weapon1_right(pygame)
+                self.movement_sprites = self.change_weapon('run_right')
             if(self.attacking):
-                print('attack right')
-                self.movement_sprites = sprite_character_weapon1_attack_right(pygame)
+                self.movement_sprites = self.change_weapon('attack_run_right')
             if(self.x <= (SCREEN_WIDTH(pygame) // 2)):
                 self.x += self.speed
             
@@ -96,9 +135,9 @@ class Character(pygame.sprite.Sprite):
             self.left_movement = True    
             self.right_movement = False
             if(not self.jumping and not self.attacking):
-                self.movement_sprites = sprite_character_weapon1_left(pygame)
+                self.movement_sprites = self.change_weapon('run_left')
             if(self.attacking):
-                self.movement_sprites = sprite_character_weapon1_attack_left(pygame)
+                self.movement_sprites = self.change_weapon('attack_run_left')
             if(self.x >= 200):
                 self.x -= self.speed
 
@@ -107,12 +146,12 @@ class Character(pygame.sprite.Sprite):
             if direction == 'left' : 
                 self.left_movement = True
                 self.right_movement = False
-                self.movement_sprites = sprite_character_jump_left(pygame)
+                self.movement_sprites = self.change_weapon('jump_left')
                 
             if direction == 'right' : 
                 self.left_movement = False
                 self.right_movement = True
-                self.movement_sprites = sprite_character_jump_right(pygame)
+                self.movement_sprites = self.change_weapon('jump_right')                
                 
                 
             
@@ -126,18 +165,19 @@ class Character(pygame.sprite.Sprite):
                 self.right_movement = False
                 
                 if quiet:
-                    self.movement_sprites = sprite_character_weapon1_attack_quiet_left(pygame)
+                    self.movement_sprites = self.change_weapon('attack_quiet_left')
+                    
                 if self.jumping:
-                    self.movement_sprites = sprite_character_weapon1_attack_jump_left(pygame)
+                    self.movement_sprites = self.change_weapon('attack_jump_left')
 
             if direction == 'right' : 
                 self.left_movement = False
                 self.right_movement = True
 
                 if quiet:
-                    self.movement_sprites = sprite_character_weapon1_attack_quiet_right(pygame)    
+                    self.movement_sprites = self.change_weapon('attack_quiet_right')   
                 if self.jumping:
-                    self.movement_sprites = sprite_character_weapon1_attack_jump_right(pygame)
+                    self.movement_sprites = self.change_weapon('attack_jump_right')
             self.animation_timer = 0.0
             # self.current_image_index = 0
             self.current_image_index %= len(self.movement_sprites)
@@ -165,11 +205,11 @@ class Character(pygame.sprite.Sprite):
         self.is_quiet = value
     def quiet_right(self):
         self.current_image_index = 0
-        self.movement_sprites = sprite_character_quiet_right(pygame)
+        self.movement_sprites = self.change_weapon('quiet_right') 
 
     def quiet_left(self):
         self.current_image_index = 0
-        self.movement_sprites = sprite_character_quiet_left(pygame)
+        self.movement_sprites = self.change_weapon('quiet_left') 
 
   
 
@@ -196,7 +236,6 @@ class Character(pygame.sprite.Sprite):
 
     def attack(self, fps):
         if self.attacking:
-            self.current_image_index += 1
             if not(fps - self.attack_start_time < self.attack_duration):
                 self.attacking = False   
                 

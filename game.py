@@ -6,9 +6,10 @@ from states.menu_state import MenuState
 from states.playing_state import PlayingState
 from states.options_state import OptionsState
 from states.game_over_state import GameOverState
-from configuration import Configuration
-config = Configuration()
+from configuration import Configuration, SoundManager
 
+config = Configuration()
+sound_manager = SoundManager()
 class Game:
     def __init__(self):
         pygame.init()    
@@ -30,7 +31,7 @@ class Game:
         if self.current_state:
             self.current_state.cleanup()
 
-        if new_state == "menu":
+        if new_state == "menu":             
             self.current_state = MenuState(self, config)
         elif new_state == "playing":
             self.current_state = PlayingState(self, config)
@@ -51,7 +52,7 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.running = False
 
-            self.get_fps += 0.5
+            self.get_fps += 1
             self.current_state.handle_events(events)
             self.current_state.update(self.get_fps)
             self.screen.fill((0, 0, 0))

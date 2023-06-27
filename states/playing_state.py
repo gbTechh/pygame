@@ -7,7 +7,7 @@ from const import FONDO_PLAYING1, SCREEN_WIDTH, SCREEN_HEIGHT
 from configuration import SoundManager
 from entities.Character import Character
 from entities.FactoryEntity import CharacterFactory
-
+from utils.time import convert_time
 
 sound_manager = SoundManager()
 
@@ -19,6 +19,7 @@ class PlayingState:
 
         self.fps = 0.0
         self.sound_menu = sound_manager
+        self.sound_menu.reset_sounds()
         self.background = FONDO_PLAYING1(self.game.pygame)
         self.background_width = self.background.get_width()
         self.background_height = self.background.get_height()
@@ -32,10 +33,16 @@ class PlayingState:
             self.sound_menu.load_sound('menu-sound', 'assets/sounds/ambiental-playing.mp3')
             self.sound_menu.play_sound('menu-sound', -1)
 
-
+        #Weapons
+        self.K_weapon1 = self.configuration.change_weapon_1
+        self.K_weapon2 = self.configuration.change_weapon_2
+        self.K_weapon3 = self.configuration.change_weapon_3
+        self.weapon_activate = 'sword'
+        
         #Character
         self.character_factory = CharacterFactory()
-        self.character = self.character_factory.create_character("sword", self.configuration.speed_character)
+        self.character = self.character_factory.create_character(self.weapon_activate, self.configuration.speed_character)
+        
         self.K_move_right = self.configuration.move_right
         self.K_move_left = self.configuration.move_left
         self.K_jump = self.configuration.jump_key
@@ -58,14 +65,32 @@ class PlayingState:
         self.paused_pressed = False
 
         #buttons pause:
-        # self.button_return_menu = HandleButton('assets/btn_back.png', pygame, sound_manager, 'assets/sounds/button-click.mp3', 'button-back-menu')
-        # self.button_unpased = HandleButton('assets/btn_back.png', pygame, sound_manager, 'assets/sounds/button-click.mp3', 'button-back')
+        
+        self.button_return_menu = HandleButton('assets/btn_back.png', self.game.pygame, sound_manager, 'assets/sounds/button-click.mp3', 'button-back-menu')
+        self.button_unpaused = HandleButton('assets/btn_play.png', self.game.pygame, sound_manager, 'assets/sounds/button-click.mp3', 'button-back')
+        self.button_reset = HandleButton('assets/btn_reset.png', self.game.pygame, sound_manager, 'assets/sounds/button-click.mp3', 'button-reset')
+
+         # Counter
+        self.counter = 0
+
+        # Health bar
+        self.health = 100
+        self.max_health = 100
+        self.health_bar_width = 200
+        self.health_bar_height = 20
 
     def handle_events(self, events):
         self.keys = self.game.pygame.key.get_pressed()
         for event in events:
+                  
             if event.type == self.game.pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
+                if event.key == self.K_weapon1:                    
+                    self.weapon_activate = 'sword'
+                    self.character.update_weapon(self.weapon_activate)
+                if event.key == self.K_weapon2:                    
+                    self.weapon_activate = 'gun'
+                    self.character.update_weapon(self.weapon_activate)
+                if event.key == self.game.pygame.K_ESCAPE:
                     self.paused_pressed = True                    
                     self.show_transparent_window()  # Muestra la ventana transparente
                     
@@ -95,13 +120,12 @@ class PlayingState:
                 if event.key == self.K_jump:
                     self.jump_is_pressed = True 
                     self.jump_is_unpressed = False
-                    self.sound_menu.stop_sound('running-step-r')
-                    self.sound_menu.unload_sound('running-step-r')
-                    self.sound_menu.stop_sound('running-step-l')
-                    self.sound_menu.unload_sound('running-step-l')
                     self.sound_menu.load_sound('jumping', 'assets/sounds/jumping.mp3')
                     self.sound_menu.play_sound('jumping')
-                
+                   
+
+            if self.paused_pressed:
+                self.paused_actions(event)     
                
 
             if event.type == self.game.pygame.KEYUP:
@@ -122,33 +146,40 @@ class PlayingState:
                  
                 if event.key == self.K_jump:
                     self.jump_is_pressed = False
-                    self.jump_is_unpressed = True
-                    
-                    if self.right_is_pressed:
-                        self.sound_menu.load_sound('running-step-r', 'assets/sounds/running-step.mp3')
-                        self.sound_menu.play_sound('running-step-r', -1)
-                    if self.left_is_pressed:
-                        self.sound_menu.load_sound('running-step-l', 'assets/sounds/running-step.mp3')
-                        self.sound_menu.play_sound('running-step-l', -1)
+                    self.jump_is_unpressed = True                   
                   
             if event.type == self.K_attack:
                 if event.button == 1:
                     self.attack_is_pressed = True  
                     self.attack_is_unpressed = True  
-                    self.sound_menu.load_sound('attack', 'assets/sounds/sword.mp3')
-                    self.sound_menu.play_sound('attack')
+                    if self.weapon_activate == 'sword':
+                        self.sound_menu.load_sound('attack', 'assets/sounds/sword.mp3')
+                        self.sound_menu.play_sound('attack')
+                        
+                    if self.weapon_activate == 'gun':
+                        self.sound_menu.load_sound('attack', 'assets/sounds/shoot.mp3')
+                        self.sound_menu.play_sound('attack')
             if event.type == self.K_unattack:
                 if event.button == 1:
                     self.attack_is_pressed = False 
                     self.attack_is_unpressed = True 
 
+    def paused_actions(self, event):
+        if self.button_return_menu.handle_event(event, self.configuration.sound_enabled):
+            self.game.change_state("menu")
+        if self.button_reset.handle_event(event, self.configuration.sound_enabled):
+            self.game.change_state("playing")
+        if self.button_unpaused.handle_event(event, self.configuration.sound_enabled):
+            self.paused_pressed = False 
+
     def configuration_changed(self):
         pass
-   
+        
     def update(self, fps):
         delta = self.game.delta_time
         self.fps = fps
         self.character.update(delta, fps)
+        self.counter += delta  # Incrementa el contador en cada frame
         
     def show_transparent_window(self):
         self.transparent_window = pygame.Surface((SCREEN_WIDTH(self.game.pygame), SCREEN_HEIGHT(self.game.pygame)), self.game.pygame.SRCALPHA)
@@ -177,7 +208,7 @@ class PlayingState:
         if(self.x_relative < SCREEN_WIDTH(self.game.pygame)):
             self.game.screen.blit(self.background, (self.x_relative, self.background_y))
 
-        if self.transparent_window is not None:
+        if self.transparent_window is not None and self.paused_pressed:
             self.transparent_window_position = (0 , self.background_y)
             self.game.screen.blit(self.transparent_window,  self.transparent_window_position)
 
@@ -236,9 +267,37 @@ class PlayingState:
         #     self.character.jump_end()
         self.character.renderCharacter(self.game.screen)
 
+        ##redner buttons pause
+        if self.paused_pressed:
+            button_return_menu_x = 100
+            button_return_menu_y = 100
+            self.button_return_menu.render(self.game.screen, button_return_menu_x, button_return_menu_y)
+
+            button_reset_x = (SCREEN_WIDTH(self.game.pygame) // 2) - (self.button_reset.width // 2)
+            button_reset_y = SCREEN_HEIGHT(self.game.pygame) // 2
+            self.button_reset.render(self.game.screen, button_reset_x, button_reset_y)
+
+            button_unpaused_x = (SCREEN_WIDTH(self.game.pygame) // 2) - (self.button_unpaused.width // 2)
+            button_unpaused_y = (SCREEN_HEIGHT(self.game.pygame) // 2) + (self.button_reset.height)
+            self.button_unpaused.render(self.game.screen, button_unpaused_x, button_unpaused_y)
+        
+        # Renderizar contador en la parte superior de la pantalla
+        counter_font = pygame.font.Font(None, 36)
+        counter_text = counter_font.render(f"Tiempo: {convert_time(int(self.counter))}", True, (255, 255, 255))
+        counter_rect = counter_text.get_rect()
+        counter_rect.center = (SCREEN_WIDTH(self.game.pygame) // 2, 50)
+        self.game.screen.blit(counter_text, counter_rect)
+
     def cleanSound(self, name):
         self.sound_menu.stop_sound(name)
         self.sound_menu.unload_sound(name)
     def cleanup(self):
         self.sound_menu.stop_sound('menu-sound')
         self.sound_menu.unload_sound('menu-sound')
+
+    # Función para disminuir la vida
+    def decrease_health(self, damage):
+        self.character.decrease_health(damage)
+        if self.character.is_dead():
+            # Realizar acciones cuando el personaje muere
+            pass
