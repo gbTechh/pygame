@@ -16,11 +16,15 @@ class Game:
         self.screen = self.pygame.display.set_mode((SCREEN_WIDTH(pygame), SCREEN_HEIGHT(pygame)))
         # crea un objeto Clock de pygame que se utiliza para controlar la velocidad de actualización del juego. El objeto Clock permite limitar el número de fotogramas por segundo (FPS) a los que se actualiza el juego
         self.clock = self.pygame.time.Clock()
-        
+        self.get_fps = self.clock.get_fps()
+        self.paygame_time = self.pygame.time.get_ticks()
         ##self.current_state almacenara el estado del juego, se inicializa como None
         self.current_state = None
         self.running = True
         self.delta_time = self.clock.tick(FPS) / 1000.0
+        
+
+   
 
     def change_state(self, new_state):
         if self.current_state:
@@ -47,9 +51,9 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.running = False
 
+            self.get_fps += 0.5
             self.current_state.handle_events(events)
-            self.current_state.update()
-
+            self.current_state.update(self.get_fps)
             self.screen.fill((0, 0, 0))
             self.screen.blit(FONDO_MENU(pygame), (0, 0))
             self.current_state.render()

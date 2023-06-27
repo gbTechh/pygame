@@ -37,7 +37,7 @@ class OptionsState:
 
        
 
-    def update(self):
+    def update(self, fps):
         pass
 
     def handle_events(self, events):

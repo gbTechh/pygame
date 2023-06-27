@@ -43,7 +43,7 @@ class MenuState:
     def configuration_changed(self):
         pass
 
-    def update(self):
+    def update(self, fps):
         pass
 
     def render(self):

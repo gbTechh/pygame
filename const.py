@@ -10,10 +10,10 @@ def SCREEN_HEIGHT(py):
   return screen_info.current_h
 
 
-FPS = 30
+FPS = 80
 
 # Otros valores constantes
-SPEED_CHARACTER = 5
+SPEED_CHARACTER = 4
 ENEMY_SPEED = 3
 
 def FONDO_MENU(pygame):
@@ -49,6 +49,36 @@ def sprite_character_weapon1_right(py):
   return [py.image.load("assets/sprites/personaje/mazo_derecha/mazo_derecha_2.png"),
           py.image.load("assets/sprites/personaje/mazo_derecha/mazo_derecha_1.png"),
           py.image.load("assets/sprites/personaje/mazo_derecha/mazo_derecha_3.png"),]
+
+def sprite_character_weapon1_attack_right(py):
+  return [py.image.load("assets/sprites/personaje/attacks/sword/run_attack_sword_derecha_1.png"),
+          py.image.load("assets/sprites/personaje/attacks/sword/run_attack_sword_derecha_1.png"),
+          py.image.load("assets/sprites/personaje/attacks/sword/run_attack_sword_derecha_3.png"),]
+def sprite_character_weapon1_attack_left(py):
+  return [py.image.load("assets/sprites/personaje/attacks/sword/run_attack_sword_izquierda_1.png"),
+          py.image.load("assets/sprites/personaje/attacks/sword/run_attack_sword_izquierda_1.png"),
+          py.image.load("assets/sprites/personaje/attacks/sword/run_attack_sword_izquierda_3.png"),]
+
+def sprite_character_weapon1_attack_quiet_right(py):
+  return [py.image.load("assets/sprites/personaje/attacks/sword/quiet_attack_sword_derecha_2.png"),
+          py.image.load("assets/sprites/personaje/attacks/sword/quiet_attack_sword_derecha_2.png"),
+          py.image.load("assets/sprites/personaje/attacks/sword/quiet_attack_sword_derecha_3.png"),
+          py.image.load("assets/sprites/personaje/attacks/sword/quiet_attack_sword_derecha_4.png"),]
+
+def sprite_character_weapon1_attack_quiet_left(py):
+  return [py.image.load("assets/sprites/personaje/attacks/sword/quiet_attack_sword_izquierda_1.png"),
+          py.image.load("assets/sprites/personaje/attacks/sword/quiet_attack_sword_izquierda_2.png"),
+          py.image.load("assets/sprites/personaje/attacks/sword/quiet_attack_sword_izquierda_3.png"),
+          py.image.load("assets/sprites/personaje/attacks/sword/quiet_attack_sword_izquierda_3.png"),]
+
+def sprite_character_weapon1_attack_jump_right(py):
+  return [py.image.load("assets/sprites/personaje/attacks/sword/jump_attack_weapon_1_derecha_1.png"),
+          py.image.load("assets/sprites/personaje/attacks/sword/jump_attack_weapon_1_derecha_2.png"),]
+
+def sprite_character_weapon1_attack_jump_left(py):
+  return [py.image.load("assets/sprites/personaje/attacks/sword/jump_attack_weapon_1_izquierda_1.png"),
+          py.image.load("assets/sprites/personaje/attacks/sword/jump_attack_weapon_1_izquierda_2.png"),]
+
 
 def sprite_character_jump_right(py):
   return [py.image.load("assets/sprites/personaje/jump/jump_mazo/jump_mazo_derecha_1.png"),

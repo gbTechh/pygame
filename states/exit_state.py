@@ -10,7 +10,7 @@ class ExitState:
                 if event.key == pygame.K_RETURN:
                     self.game.change_state("menu")
 
-    def update(self):
+    def update(self, fps):
         pass
 
     def render(self):

@@ -14,6 +14,8 @@ class Configuration:
             cls._instance.move_key = pygame.K_RIGHT
             cls._instance.move_left = pygame.K_a
             cls._instance.move_right = pygame.K_d
+            cls._instance.attack_key = pygame.MOUSEBUTTONDOWN
+            cls._instance.unattack_key = pygame.MOUSEBUTTONUP
             cls._instance.fly = pygame.K_w
             cls._instance.speed_character = SPEED_CHARACTER
             cls._instance.observers = []
@@ -53,7 +55,7 @@ class SoundManager:
         self.sounds = {}
 
     def load_sound(self, sound_name, sound_path):
-        self.sound = pygame.mixer.Sound(sound_path)
+        self.sound = pygame.mixer.Sound(sound_path)        
         self.sounds[sound_name] = self.sound
 
     def play_sound(self, sound_name, loop = 0):
