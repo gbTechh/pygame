@@ -30,12 +30,11 @@ class EnemyFactory:
         enemy.update_movement(screen, counter)
         return enemy
 
+   
     def create_enemy_instance(self, enemy_type, subtype):
         if enemy_type == 'fly':
-            print('fly')
             return Fly(subtype)
         elif enemy_type == 'earth':
-            print('earth')
             return Earth(subtype)
         else:
             return Earth(subtype)

@@ -14,13 +14,15 @@ class Enemy(pygame.sprite.Sprite):
       
 
     def render_enemy(self, screen, movement_sprites,x ,y):
-        if self.animation_timer >= self.animation_speed:
-            self.current_image_index += 1
-            self.animation_timer = 0.0    
-        current_image = movement_sprites[self.current_image_index]
+        if(x > 0):
+            if self.animation_timer >= self.animation_speed:
+                self.current_image_index += 1
+                self.animation_timer = 0.0    
+            current_image = movement_sprites[self.current_image_index]
+            
+            screen.blit(current_image, (x, y))
+            
         
-        
-        screen.blit(current_image, (x, y))
 
     
     def movementCharacter(self, delta, movement_sprites):    
@@ -74,7 +76,8 @@ class Earth(Enemy):
 
         self.render_enemy(screen, self.sprites, x, self.y)
 
-
+    def reset_x(self):
+        self.x = SCREEN_WIDTH(pygame)
     
 
 
@@ -104,8 +107,13 @@ class Fly(Enemy):
        
         x = self.x
         x -= time * self.speed
-
+        x = x // 1
+        
         self.render_enemy(screen, self.sprites, x, self.y)
+
+    def reset_x(self):
+        self.x = SCREEN_WIDTH(pygame)   
+        
         
 class Spider(Enemy):
     def __init__(self):

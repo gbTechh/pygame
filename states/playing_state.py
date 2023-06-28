@@ -84,8 +84,9 @@ class PlayingState:
         #Enemies
         self.levels = Levels()
         self.all_levels = self.levels.levels
-        self.enemy_factory = EnemyFactory()
+        self.enemy_factory = None
         self.current_level = 1
+        self.create_enemy= False
 
     def handle_events(self, events):
         self.keys = self.game.pygame.key.get_pressed()
@@ -197,24 +198,32 @@ class PlayingState:
     
     def start_level(self, counter, delta, screen, timer):
         timer = timer // 1
-        for level, level_data in self.all_levels.items():
-            for enemy_data in level_data['enemies']:
-                enemy_type = enemy_data['type']
-                total = 0
-                for subtype, subtype_data in enemy_data['suptye'].items():
-                    total = subtype_data['total']
-                    interval_time = subtype_data['interval_time']
+        self.enemy_factory = EnemyFactory()
+        enemy1 = None
+        enemy2 = None
 
-        if(timer % 2 == 0):
-            self.enemy_factory.create_enemy('fly', delta, 1, screen, counter)
-            self.enemy_factory.create_enemy('earth', delta, 1, screen, counter)
-        if(timer % 10 == 0):
-            self.enemy_factory.create_enemy('fly', delta, 1, screen, counter)
-            self.enemy_factory.create_enemy('earth', delta, 1, screen, counter)
+
+        # for level, level_data in self.all_levels.items():
+        #     for enemy_data in level_data['enemies']:
+        #         enemy_type = enemy_data['type']
+        #         total = 0
+        #         for subtype, subtype_data in enemy_data['suptye'].items():
+        #             total = subtype_data['total']
+        #             interval_time = subtype_data['interval_time']
+
+        if(not self.create_enemy ):
+            enemy1 = self.enemy_factory.create_enemy('fly', delta, 1, screen, counter)
+            enemy2 = self.enemy_factory.create_enemy('earth', delta, 1, screen, counter)
+
+        else:
+            self.create_enemy = True
+            
         
-        if(timer % 15 == 0):
-            self.enemy_factory.create_enemy('fly', delta, 1, screen, counter)
-            self.enemy_factory.create_enemy('fly', delta, 1, screen, counter)
+        if(timer % 4 == 0):
+            self.create_enemy = False
+            enemy1.reset_x()
+        else:
+            enemy2 = self.enemy_factory.create_enemy('earth', delta, 1, screen, counter)
                         
                         
         
