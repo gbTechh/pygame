@@ -24,7 +24,7 @@ class Character(pygame.sprite.Sprite):
         self.right_movement = False
         self.left_movement = False
 
-        self.animation_speed = 0.1
+        self.animation_speed = 0.05
         self.animation_timer = 0.0
         self.current_image_index = 0
 

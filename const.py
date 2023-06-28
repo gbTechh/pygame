@@ -145,4 +145,4 @@ def sprite_enemy_earth_type1(py):
   return [py.image.load("assets/sprites/enemies/eart_type1_1.png"),py.image.load("assets/sprites/enemies/eart_type1_2.png")]
   
 def sprite_enemy_fly_type1(py):
-  return [py.image.load("assets/sprites/enemies/eart_fly1_1.png"),py.image.load("assets/sprites/enemies/eart_fly1_2.png")]
+  return [py.image.load("assets/sprites/enemies/fly_type1_1.png"),py.image.load("assets/sprites/enemies/fly_type1_2.png")]

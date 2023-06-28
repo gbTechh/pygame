@@ -12,5 +12,3 @@ def convert_timer(s):
   if s < 10:
     return f"0{s}"
   return s
-
-print(convert_time(70))

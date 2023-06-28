@@ -1,3 +1,4 @@
+import pygame
 from entities.Character import Character
 from entities.Weapon import Sword, Gun, Staff
 from entities.Enemy import Enemy, Fly, Earth
@@ -17,15 +18,28 @@ class CharacterFactory:
         else:
             return Sword()
 
-class EnemyFactory:
-    def create_enemy(self, enemy_type, subtype = ''):
-        enemy = self.create_enemy(enemy_type, subtype)
-        return Enemy(enemy)
+class EnemyFactory:    
+    def __init__(self):
+        pass
+    def create_enemy(self, enemy_type, delta, subtype, screen, counter):
+        
+        enemy = self.create_enemy_instance(enemy_type, subtype)
+        enemy.set_attributes()
+        sprites = enemy.sprites
+        enemy.movementCharacter(delta, sprites )
+        enemy.update_movement(screen, counter)
+        return enemy
 
-    def create_enemy(self, enemy_type, subtype):
+    def create_enemy_instance(self, enemy_type, subtype):
         if enemy_type == 'fly':
+            print('fly')
             return Fly(subtype)
         elif enemy_type == 'earth':
+            print('earth')
             return Earth(subtype)
         else:
             return Earth(subtype)
+    
+    
+    
+  

@@ -6,7 +6,7 @@ from components.Button import HandleButton
 from const import FONDO_PLAYING1, SCREEN_WIDTH, SCREEN_HEIGHT
 from configuration import SoundManager
 from entities.Character import Character
-from entities.FactoryEntity import CharacterFactory
+from entities.FactoryEntity import CharacterFactory, EnemyFactory
 from utils.time import convert_time
 
 sound_manager = SoundManager()
@@ -17,6 +17,8 @@ class PlayingState:
         self.configuration = configuration
         self.configuration.register_observer(self)
 
+
+        self.start_game = False
         self.fps = 0.0
         self.sound_menu = sound_manager
         self.sound_menu.reset_sounds()
@@ -78,6 +80,12 @@ class PlayingState:
         self.max_health = 100
         self.health_bar_width = 200
         self.health_bar_height = 20
+
+        #Enemies
+        self.levels = Levels()
+        self.all_levels = self.levels.levels
+        self.enemy_factory = EnemyFactory()
+        self.current_level = 1
 
     def handle_events(self, events):
         self.keys = self.game.pygame.key.get_pressed()
@@ -174,7 +182,9 @@ class PlayingState:
 
     def configuration_changed(self):
         pass
+    
         
+    
     def update(self, fps):
         delta = self.game.delta_time
         self.fps = fps
@@ -185,8 +195,32 @@ class PlayingState:
         self.transparent_window = pygame.Surface((SCREEN_WIDTH(self.game.pygame), SCREEN_HEIGHT(self.game.pygame)), self.game.pygame.SRCALPHA)
         self.transparent_window.fill((0, 0, 0, 128))    
     
+    def start_level(self, counter, delta, screen, timer):
+        timer = timer // 1
+        for level, level_data in self.all_levels.items():
+            for enemy_data in level_data['enemies']:
+                enemy_type = enemy_data['type']
+                total = 0
+                for subtype, subtype_data in enemy_data['suptye'].items():
+                    total = subtype_data['total']
+                    interval_time = subtype_data['interval_time']
+
+        if(timer % 2 == 0):
+            self.enemy_factory.create_enemy('fly', delta, 1, screen, counter)
+            self.enemy_factory.create_enemy('earth', delta, 1, screen, counter)
+        if(timer % 10 == 0):
+            self.enemy_factory.create_enemy('fly', delta, 1, screen, counter)
+            self.enemy_factory.create_enemy('earth', delta, 1, screen, counter)
+        
+        if(timer % 15 == 0):
+            self.enemy_factory.create_enemy('fly', delta, 1, screen, counter)
+            self.enemy_factory.create_enemy('fly', delta, 1, screen, counter)
+                        
+                        
+        
 
     def render(self):
+        
         self.game.screen.fill((0,0,0))
         self.x_relative = self.background_x % self.background_width
         self.game.screen.blit(self.background, (self.x_relative - self.background_width, self.background_y))
@@ -288,16 +322,96 @@ class PlayingState:
         counter_rect.center = (SCREEN_WIDTH(self.game.pygame) // 2, 50)
         self.game.screen.blit(counter_text, counter_rect)
 
+        
+        
+        if(self.game.counter_time > 1):
+            self.start_level(self.game.counter_time, self.game.delta_time, self.game.screen, self.counter)
+
     def cleanSound(self, name):
         self.sound_menu.stop_sound(name)
         self.sound_menu.unload_sound(name)
     def cleanup(self):
         self.sound_menu.stop_sound('menu-sound')
         self.sound_menu.unload_sound('menu-sound')
-
+    
+    def render_enemies(self):
+        pass
     # Función para disminuir la vida
     def decrease_health(self, damage):
         self.character.decrease_health(damage)
         if self.character.is_dead():
             # Realizar acciones cuando el personaje muere
             pass
+
+class Levels():
+    def __init__(self):
+        self.levels = {
+            1: {     
+                'weapons': ['sword'],    
+                'time': 120,    
+                'enemies': [
+                    {
+                        'type': 'earth',
+                        'suptye': {
+                            1: {
+                                'total': 100,
+                                'interval_time': 3
+                            },                            
+                        },
+                        
+                    },
+                    {
+                        'type': 'fly',
+                        'suptye': {
+                            1: {
+                                'total': 100,
+                                'interval_time': 3
+                            },
+                            2: {
+                                'total': 40,
+                                'interval_time': 5
+                            }
+                        },
+                        
+                    },
+                    
+                ]
+            },
+            2: {     
+                'weapons': ['sword', 'gun'],    
+                'time': 120,     
+                'enemies': [
+                    {
+                        'type': 'earth',
+                        'suptye': {
+                            1: {
+                                'total': 200,
+                                'interval_time': 3
+                            },                            
+                        },
+                        
+                    },
+                    {
+                        'type': 'fly',
+                        'suptye': {
+                            1: {
+                                'total': 120,
+                                'interval_time': 4
+                            },
+                            2: {
+                                'total': 50,
+                                'interval_time': 5
+                            }
+                        },
+                        
+                    },
+                    
+                ]
+            }, 
+        }
+
+    def get_level_configs(self, level):
+        return level[level]
+
+
+    

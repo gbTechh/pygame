@@ -1,6 +1,7 @@
 import pygame
-from const import sprite_enemy_earth_type1, sprite_enemy_fly_type1
-class Enemy:
+from const import sprite_enemy_earth_type1, sprite_enemy_fly_type1, SCREEN_WIDTH
+
+class Enemy(pygame.sprite.Sprite):
     def __init__(self, enemy):
         self.position = (0, 0)
         self.health = 100
@@ -10,26 +11,27 @@ class Enemy:
         self.animation_timer = 0.0
         self.current_image_index = 0
 
-        self.movement_sprites = ''
+      
 
-    def render_enemy(self, screen):
+    def render_enemy(self, screen, movement_sprites,x ,y):
         if self.animation_timer >= self.animation_speed:
             self.current_image_index += 1
             self.animation_timer = 0.0    
-        current_image = self.movement_sprites[self.current_image_index]
-        screen.blit(current_image, (self.x, self.y))
-    
-    def movementCharacter(self, delta):    
-        self.animation_timer += delta   
+        current_image = movement_sprites[self.current_image_index]
+        
+        
+        screen.blit(current_image, (x, y))
 
+    
+    def movementCharacter(self, delta, movement_sprites):    
+        self.animation_timer += delta   
+        
         if self.animation_timer >= self.animation_speed:
             self.current_image_index += 1
             self.animation_timer = 0.0   
-        self.current_image_index %= len(self.movement_sprites)
+        self.current_image_index %= len(movement_sprites)
 
-    def move(self):
-        # Implementar el movimiento del monstruo
-        pass
+
 
     def attack(self):
         # Implementar el ataque del monstruo
@@ -45,38 +47,66 @@ class Enemy:
 
 class Earth(Enemy):
     def __init__(self, subtype):
-        super().__init__(health=100, attack=20, damage=10)
+        super().__init__(subtype)
         self.subtype = subtype
-        self.sprites = []
-
-    def create_enemy(self):
-        if int(self.subtype) == 1:
-            sprites = sprite_enemy_earth_type1(pygame)
-    
-class Earth(Enemy):
-    def __init__(self):
-        super().__init__(health=100, attack=20, damage=10)
         
+        self.health = 20
+        self.attack = 10
+        self.resistance = 10
         self.sprites = []
+        self.x = SCREEN_WIDTH(pygame)
+        self.y = 740
+        self.count = 0
+        self.speed = 10
 
-    def create_enemy(self, subtype):
-        if int(subtype) == 1:
-            sprites = sprite_enemy_earth_type1(pygame)
-    
+    def set_attributes(self):
+        if int(self.subtype) == 1:
+            self.sprites = sprite_enemy_earth_type1(pygame)
+            self.health = 20
+            self.attack = 10
+            self.resistance = 10 
+            self.speed = 10
+
+    def update_movement(self, screen, time):
+       
+        x = self.x
+        x -= time * self.speed
+
+        self.render_enemy(screen, self.sprites, x, self.y)
+
+
     
 
 
 class Fly(Enemy):
-    def __init__(self):
-        super().__init__(health=500, attack=50, damage=20)
+    def __init__(self, subtype):
+        super().__init__(subtype)
         self.subtype = subtype
+        
+        self.health = 20
+        self.attack = 10
+        self.resistance = 10
         self.sprites = []
+        self.x = SCREEN_WIDTH(pygame)
+        self.y = 100
+        self.count = 0
+        self.speed = 10
 
-    def create_enemy(self):
+    def set_attributes(self):
         if int(self.subtype) == 1:
-            sprites = sprite_enemy_fly_type1(pygame)
+            self.sprites = sprite_enemy_fly_type1(pygame)
+            self.health = 20
+            self.attack = 10
+            self.resistance = 10 
+            self.speed = 10
 
+    def update_movement(self, screen, time):
+       
+        x = self.x
+        x -= time * self.speed
 
+        self.render_enemy(screen, self.sprites, x, self.y)
+        
 class Spider(Enemy):
     def __init__(self):
         super().__init__(health=50, attack=10, damage=5)

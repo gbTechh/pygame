@@ -24,6 +24,7 @@ class Game:
         self.running = True
         self.delta_time = self.clock.tick(FPS) / 1000.0
         
+        self.counter_time = 0
 
    
 
@@ -34,6 +35,7 @@ class Game:
         if new_state == "menu":             
             self.current_state = MenuState(self, config)
         elif new_state == "playing":
+            self.counter_time = 0
             self.current_state = PlayingState(self, config)
         elif new_state == "options":
             self.current_state = OptionsState(self, config)
@@ -44,10 +46,11 @@ class Game:
 
     def run(self):
         self.change_state("menu")
-
+        
+        
         while self.running:
             events = self.pygame.event.get()
-
+            self.counter_time += 1
             for event in events:
                 if event.type == pygame.QUIT:
                     self.running = False
